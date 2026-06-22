@@ -8,7 +8,7 @@ export const servers = [
   },
   {
     id: 2,
-    name: "Another Server",
+    name: "Radio BD",
     url: "https://radio-bd.com/",
     testUrl: "https://radio-bd.com/",
     category: "Radio / Music"
