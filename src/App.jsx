@@ -33,18 +33,20 @@ function App() {
   const [category, setCategory] = useState("All");
 
   const categories = useMemo(
-    () => ["All", ...new Set(servers.map(server => server.category))],
+    () => ["All", ...Array.from(new Set(servers.map(server => server.category))).sort((left, right) => left.localeCompare(right))],
     []
   );
 
   const filteredServers = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
-    return servers.filter(server => {
-      const matchesCategory = category === "All" || server.category === category;
-      const searchableText = `${server.name} ${server.category} ${server.url}`.toLowerCase();
-      return matchesCategory && searchableText.includes(normalizedQuery);
-    });
+    return servers
+      .filter(server => {
+        const matchesCategory = category === "All" || server.category === category;
+        const searchableText = `${server.name} ${server.category} ${server.url}`.toLowerCase();
+        return matchesCategory && searchableText.includes(normalizedQuery);
+      })
+      .sort((left, right) => left.name.localeCompare(right.name));
   }, [category, query]);
 
   const counts = servers.reduce(
