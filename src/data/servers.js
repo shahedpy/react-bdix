@@ -82,5 +82,12 @@ export const servers = [
     url: "https://www.somoynews.tv/",
     testUrl: "https://www.somoynews.tv/",
     category: "TV / News"
-  }
+  },
+  {
+    id: 13,
+    name: "Chorki",
+    url: "https://www.chorki.com/",
+    testUrl: "https://www.chorki.com/",
+    category: "OTT / Movie"
+  },
 ];
