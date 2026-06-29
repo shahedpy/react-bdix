@@ -2499,13 +2499,6 @@ export const servers = [
     "category": "FTP / Movie"
   },
   {
-    "id": 370,
-    "name": "xmovies8.org",
-    "url": "https://xmovies8.org/",
-    "testUrl": "https://xmovies8.org/",
-    "category": "FTP / Movie"
-  },
-  {
     "id": 371,
     "name": "www.bdlan.net",
     "url": "http://www.bdlan.net/",
