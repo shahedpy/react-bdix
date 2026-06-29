@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { servers } from "./data/servers";
 import { testServer } from "./utils/testServer";
 import "./App.css";
@@ -40,6 +40,20 @@ function App() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = window.localStorage.getItem("bdix-theme");
+
+    if (savedTheme === "light" || savedTheme === "dark") {
+      return savedTheme;
+    }
+
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  });
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    window.localStorage.setItem("bdix-theme", theme);
+  }, [theme]);
 
   const categories = useMemo(
     () => ["All", ...Array.from(new Set(servers.map(server => server.category))).sort((left, right) => left.localeCompare(right))],
@@ -116,7 +130,7 @@ function App() {
   }
 
   return (
-    <div className="app">
+    <div className="app" data-theme={theme}>
       <div className="phone-shell">
         <header className="app-header">
           <div className="hero-copy">
@@ -128,6 +142,24 @@ function App() {
           </div>
 
           <div className="header-actions">
+            <div className="theme-switch" role="group" aria-label="Choose color theme">
+              <button
+                className={theme === "light" ? "theme-option active" : "theme-option"}
+                onClick={() => setTheme("light")}
+                type="button"
+                aria-pressed={theme === "light"}
+              >
+                Light
+              </button>
+              <button
+                className={theme === "dark" ? "theme-option active" : "theme-option"}
+                onClick={() => setTheme("dark")}
+                type="button"
+                aria-pressed={theme === "dark"}
+              >
+                Dark
+              </button>
+            </div>
             <button
               className="primary-action"
               onClick={testAll}
