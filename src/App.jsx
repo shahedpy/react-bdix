@@ -31,6 +31,7 @@ function App() {
   const [lastChecked, setLastChecked] = useState({});
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const categories = useMemo(
     () => ["All", ...Array.from(new Set(servers.map(server => server.category))).sort((left, right) => left.localeCompare(right))],
@@ -43,11 +44,13 @@ function App() {
     return servers
       .filter(server => {
         const matchesCategory = category === "All" || server.category === category;
+        const status = results[server.id] || "untested";
+        const matchesStatus = statusFilter === "all" || status === statusFilter;
         const searchableText = `${server.name} ${server.category} ${server.url}`.toLowerCase();
-        return matchesCategory && searchableText.includes(normalizedQuery);
+        return matchesCategory && matchesStatus && searchableText.includes(normalizedQuery);
       })
       .sort((left, right) => left.name.localeCompare(right.name));
-  }, [category, query]);
+  }, [category, query, results, statusFilter]);
 
   const counts = servers.reduce(
     (summary, server) => {
@@ -56,6 +59,11 @@ function App() {
       return summary;
     },
     { untested: 0, testing: 0, online: 0, offline: 0 }
+  );
+
+  const onlineServers = useMemo(
+    () => servers.filter(server => results[server.id] === "online"),
+    [results]
   );
 
   const isTesting = Object.values(results).includes("testing");
@@ -87,9 +95,16 @@ function App() {
     await Promise.all(filteredServers.map(server => handleTest(server)));
   }
 
+  function openOnlineSites() {
+    onlineServers.forEach(server => {
+      window.open(server.url, "_blank", "noopener,noreferrer");
+    });
+  }
+
   function resetFilters() {
     setQuery("");
     setCategory("All");
+    setStatusFilter("all");
   }
 
   return (
@@ -104,32 +119,60 @@ function App() {
           </p>
         </div>
 
-        <button
-          className="primary-action"
-          onClick={testAll}
-          disabled={isTesting || filteredServers.length === 0}
-        >
-          {isTesting ? "Testing..." : `Test ${filteredServers.length} shown`}
-        </button>
+        <div className="header-actions">
+          <button
+            className="primary-action"
+            onClick={testAll}
+            disabled={isTesting || filteredServers.length === 0}
+          >
+            {isTesting ? "Testing..." : `Test ${filteredServers.length} shown`}
+          </button>
+          <span className="tooltip-wrap" data-tooltip="Allow browser pop-ups to open all online sites in new tabs.">
+            <button
+              className="secondary-action"
+              onClick={openOnlineSites}
+              disabled={onlineServers.length === 0}
+              type="button"
+            >
+              Open {onlineServers.length} online
+            </button>
+          </span>
+        </div>
       </header>
 
       <section className="summary" aria-label="Server status summary">
-        <div className="summary-item">
+        <button
+          className={statusFilter === "all" ? "summary-item active" : "summary-item"}
+          onClick={() => setStatusFilter("all")}
+          type="button"
+        >
           <span>{servers.length}</span>
           <p>Total</p>
-        </div>
-        <div className="summary-item online">
+        </button>
+        <button
+          className={statusFilter === "online" ? "summary-item online active" : "summary-item online"}
+          onClick={() => setStatusFilter("online")}
+          type="button"
+        >
           <span>{counts.online}</span>
           <p>Online</p>
-        </div>
-        <div className="summary-item offline">
+        </button>
+        <button
+          className={statusFilter === "offline" ? "summary-item offline active" : "summary-item offline"}
+          onClick={() => setStatusFilter("offline")}
+          type="button"
+        >
           <span>{counts.offline}</span>
           <p>Offline</p>
-        </div>
-        <div className="summary-item">
+        </button>
+        <button
+          className={statusFilter === "untested" ? "summary-item active" : "summary-item"}
+          onClick={() => setStatusFilter("untested")}
+          type="button"
+        >
           <span>{counts.untested}</span>
           <p>Not tested</p>
-        </div>
+        </button>
       </section>
 
       <section className="toolbar" aria-label="Server filters">
