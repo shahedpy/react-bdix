@@ -23,8 +23,23 @@ const STATUS_META = {
     label: "Offline",
     description: "The test request failed or timed out.",
     tone: "bad"
+  },
+  blocked: {
+    label: "Blocked",
+    description: "Open the app over HTTP to test this server.",
+    tone: "warn"
   }
 };
+
+function getHttpModeUrl() {
+  const httpUrl = new URL(window.location.href);
+  httpUrl.protocol = "http:";
+  return httpUrl.href;
+}
+
+function getHttpModeAttemptedKey() {
+  return `bdix-http-mode-attempted:${window.location.host}`;
+}
 
 function getFaviconUrl(url) {
   try {
@@ -37,6 +52,13 @@ function getFaviconUrl(url) {
 function App() {
   const [results, setResults] = useState({});
   const [lastChecked, setLastChecked] = useState({});
+  const [httpModeUrl] = useState(() => (
+    window.location.protocol === "https:" ? getHttpModeUrl() : ""
+  ));
+  const [showHttpModeNotice] = useState(() => (
+    window.location.protocol === "https:" &&
+    window.sessionStorage.getItem(getHttpModeAttemptedKey()) === "true"
+  ));
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -54,6 +76,19 @@ function App() {
     document.documentElement.dataset.theme = theme;
     window.localStorage.setItem("bdix-theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    if (window.location.protocol !== "https:" || showHttpModeNotice) {
+      return;
+    }
+
+    const attemptedKey = getHttpModeAttemptedKey();
+
+    if (!window.sessionStorage.getItem(attemptedKey)) {
+      window.sessionStorage.setItem(attemptedKey, "true");
+      window.location.replace(httpModeUrl);
+    }
+  }, [httpModeUrl, showHttpModeNotice]);
 
   const categories = useMemo(
     () => ["All", ...Array.from(new Set(servers.map(server => server.category))).sort((left, right) => left.localeCompare(right))],
@@ -80,7 +115,7 @@ function App() {
       summary[status] += 1;
       return summary;
     },
-    { untested: 0, testing: 0, online: 0, offline: 0 }
+    { untested: 0, testing: 0, online: 0, offline: 0, blocked: 0 }
   );
 
   const onlineServers = useMemo(
@@ -96,11 +131,11 @@ function App() {
       [server.id]: "testing"
     }));
 
-    const ok = await testServer(server.testUrl);
+    const status = await testServer(server.testUrl);
 
     setResults(prev => ({
       ...prev,
-      [server.id]: ok ? "online" : "offline"
+      [server.id]: status
     }));
 
     setLastChecked(prev => ({
@@ -179,6 +214,22 @@ function App() {
         </div>
       </header>
 
+      {showHttpModeNotice && (
+        <section className="http-mode-notice" aria-label="HTTP testing mode">
+          <div>
+            <h2>HTTP testing mode needed</h2>
+            <p>
+              This page is open with HTTPS, so the browser blocks tests for HTTP and FTP BDIX
+              servers before they reach your network. Open the HTTP version to get the same count
+              as localhost.
+            </p>
+          </div>
+          <a className="notice-action" href={httpModeUrl}>
+            Open HTTP mode
+          </a>
+        </section>
+      )}
+
       <section className="summary-panel" aria-label="Server status summary">
         <div className="panel-title">
           <h2>Overview</h2>
@@ -217,6 +268,16 @@ function App() {
             <span>{counts.untested}</span>
             <p>Not tested</p>
           </button>
+          {counts.blocked > 0 && (
+            <button
+              className={statusFilter === "blocked" ? "summary-item blocked active" : "summary-item blocked"}
+              onClick={() => setStatusFilter("blocked")}
+              type="button"
+            >
+              <span>{counts.blocked}</span>
+              <p>Blocked</p>
+            </button>
+          )}
         </div>
       </section>
 

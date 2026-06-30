@@ -1,4 +1,8 @@
 export async function testServer(testUrl, timeout = 5000) {
+  if (isBrowserBlockedTest(testUrl)) {
+    return "blocked";
+  }
+
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
 
@@ -10,11 +14,20 @@ export async function testServer(testUrl, timeout = 5000) {
       signal: controller.signal
     });
 
-    return true;
+    return "online";
   } catch {
-    return false;
+    return "offline";
   } finally {
     clearTimeout(timer);
+  }
+}
+
+export function isBrowserBlockedTest(testUrl) {
+  try {
+    const { protocol } = new URL(testUrl);
+    return window.location.protocol === "https:" && (protocol === "http:" || protocol === "ftp:");
+  } catch {
+    return true;
   }
 }
 
