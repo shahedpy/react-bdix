@@ -3,7 +3,9 @@
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
-  font: 18px/145% var(--sans);
+  font-family: var(--sans);
+  font-size: clamp(1rem, calc(1rem + 0.15vw), 1.125rem);
+  line-height: 1.45;
   letter-spacing: 0;
   color-scheme: light;
   color: #17191f;
@@ -13,9 +15,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
 }
 
 :root[data-theme="dark"] {
