@@ -778,15 +778,6 @@ export const servers = [
     "lastCheckFail": null
   },
   {
-    "id": 88,
-    "name": "bdfun",
-    "url": "http://bdfun.club",
-    "testUrl": "http://bdfun.club",
-    "category": "FTP / Not Support",
-    "lastCheckPass": null,
-    "lastCheckFail": null
-  },
-  {
     "id": 90,
     "name": "bdix",
     "url": "http://www.bdix.org/",
@@ -3380,6 +3371,16 @@ export const servers = [
     "testUrl": "http://www.torrentbd.com",
     "category": "FTP / Not Support",
     "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 398,
+    "name": "Cineplex BD",
+    "url": "http://cineplexbd.net/",
+    "testUrl": "http://cineplexbd.net/",
+    "category": "FTP / Movie",
+    "ispResults": ["Combined Soft Kazipara"],
+    "lastCheckPass": "2026-11-06",
     "lastCheckFail": null
   }
 ];
