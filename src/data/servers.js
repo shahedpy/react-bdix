@@ -769,15 +769,6 @@ export const servers = [
     "lastCheckFail": null
   },
   {
-    "id": 87,
-    "name": "bdfun",
-    "url": "http://mtube.bdfun.club",
-    "testUrl": "http://mtube.bdfun.club",
-    "category": "FTP / Not Support",
-    "lastCheckPass": null,
-    "lastCheckFail": null
-  },
-  {
     "id": 90,
     "name": "bdix",
     "url": "http://www.bdix.org/",
@@ -854,15 +845,6 @@ export const servers = [
     "name": "bossbd",
     "url": "http://www.bossbd.net/TV/",
     "testUrl": "http://www.bossbd.net/TV/",
-    "category": "FTP / Not Support",
-    "lastCheckPass": null,
-    "lastCheckFail": null
-  },
-  {
-    "id": 99,
-    "name": "bdfun",
-    "url": "http://bdfun.club:8096/web/index.html#!/home.html",
-    "testUrl": "http://bdfun.club:8096/web/index.html#!/home.html",
     "category": "FTP / Not Support",
     "lastCheckPass": null,
     "lastCheckFail": null
@@ -1270,15 +1252,6 @@ export const servers = [
     "name": "movieboxbd",
     "url": "http://db1.movieboxbd.com",
     "testUrl": "http://db1.movieboxbd.com",
-    "category": "FTP / Not Support",
-    "lastCheckPass": null,
-    "lastCheckFail": null
-  },
-  {
-    "id": 145,
-    "name": "midiplex",
-    "url": "http://midiplex.net",
-    "testUrl": "http://midiplex.net",
     "category": "FTP / Not Support",
     "lastCheckPass": null,
     "lastCheckFail": null
