@@ -796,15 +796,6 @@ export const servers = [
     "lastCheckFail": null
   },
   {
-    "id": 89,
-    "name": "bdiptv",
-    "url": "http://bdiptv.stream/",
-    "testUrl": "http://bdiptv.stream/",
-    "category": "FTP / Not Support",
-    "lastCheckPass": null,
-    "lastCheckFail": null
-  },
-  {
     "id": 90,
     "name": "bdix",
     "url": "http://www.bdix.org/",
