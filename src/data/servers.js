@@ -553,15 +553,6 @@ export const servers = [
     "lastCheckFail": null
   },
   {
-    "id": 62,
-    "name": "pollybd",
-    "url": "http://pollybd.com/2019/06/26/bdix-ftp-server-list-2019/",
-    "testUrl": "http://pollybd.com/2019/06/26/bdix-ftp-server-list-2019/",
-    "category": "FTP / Movie",
-    "lastCheckPass": null,
-    "lastCheckFail": null
-  },
-  {
     "id": 63,
     "name": "Quickonlineftp",
     "url": "http://quickonlineftp.com/",
@@ -2571,15 +2562,6 @@ export const servers = [
     "lastCheckFail": null
   },
   {
-    "id": 288,
-    "name": "Everythinginherenet",
-    "url": "https://everythinginherenet.blogspot.com/2019/03/bdix-server-list-2019.html",
-    "testUrl": "https://everythinginherenet.blogspot.com/2019/03/bdix-server-list-2019.html",
-    "category": "Blog",
-    "lastCheckPass": null,
-    "lastCheckFail": null
-  },
-  {
     "id": 291,
     "name": "alluniquearticle",
     "url": "https://www.alluniquearticle.com/2018/09/bdix-ftp-server-list-full-collection.html",
@@ -3209,6 +3191,195 @@ export const servers = [
     "category": "FTP / Movie",
     "ispResults": ["Combined Soft Kazipara"],
     "lastCheckPass": "2026-11-06",
+    "lastCheckFail": null
+  },
+  {
+    "id": 377,
+    "name": "DFN-BD Tube",
+    "url": "http://tube.dfnbd.net/",
+    "testUrl": "http://tube.dfnbd.net/",
+    "category": "FTP / Movie",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 378,
+    "name": "ICC | Port 82",
+    "url": "http://10.16.100.244:82",
+    "testUrl": "http://10.16.100.244:82",
+    "category": "IP / FTP",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 379,
+    "name": "Dfnbd | MV2",
+    "url": "http://mv2.dfnbd.net:88/",
+    "testUrl": "http://mv2.dfnbd.net:88/",
+    "category": "FTP / Not Support",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 380,
+    "name": "VdoNip",
+    "url": "http://vdonip.com/",
+    "testUrl": "http://vdonip.com/",
+    "category": "FTP / Movie",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 381,
+    "name": "123movies.is",
+    "url": "https://123movies.is/",
+    "testUrl": "https://123movies.is/",
+    "category": "FTP / Movie",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 382,
+    "name": "172.50.50.8",
+    "url": "http://172.50.50.8",
+    "testUrl": "http://172.50.50.8",
+    "category": "IP / FTP",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 383,
+    "name": "BDIXBD",
+    "url": "http://www.bdixbd.com",
+    "testUrl": "http://www.bdixbd.com",
+    "category": "FTP / Movie",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 384,
+    "name": "amrbd | AMR TV",
+    "url": "http://amrbd.com/amrtv/",
+    "testUrl": "http://amrbd.com/amrtv/",
+    "category": "TV / Live",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 385,
+    "name": "ICC | Entertainment",
+    "url": "http://10.16.100.244/entertainment/index.htm",
+    "testUrl": "http://10.16.100.244/entertainment/index.htm",
+    "category": "TV / Live",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 386,
+    "name": "Megaplex BD | TV",
+    "url": "http://tv.megaplexbd.com",
+    "testUrl": "http://tv.megaplexbd.com",
+    "category": "TV / Live",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 387,
+    "name": "Bioscope Live | Featured TV",
+    "url": "http://www.bioscopelive.com/en/featured-tv",
+    "testUrl": "http://www.bioscopelive.com/en/featured-tv",
+    "category": "TV / Live",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 388,
+    "name": "Hotstar | Channels",
+    "url": "http://www.hotstar.com/channels",
+    "testUrl": "http://www.hotstar.com/channels",
+    "category": "TV / Live",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 389,
+    "name": "Channel-BD",
+    "url": "http://www.channel-bd.com",
+    "testUrl": "http://www.channel-bd.com",
+    "category": "TV / Live",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 390,
+    "name": "Abohomaan Bangla TV",
+    "url": "http://abohomanbangla.com/Bangladesh_web_directory/Bangla_Tv.html",
+    "testUrl": "http://abohomanbangla.com/Bangladesh_web_directory/Bangla_Tv.html",
+    "category": "TV / Live",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 391,
+    "name": "Dhaka Sports",
+    "url": "http://dhakasports.com",
+    "testUrl": "http://dhakasports.com",
+    "category": "TV / Live",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 392,
+    "name": "Bioscope Live",
+    "url": "http://www.bioscopelive.com",
+    "testUrl": "http://www.bioscopelive.com",
+    "category": "TV / Live",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 393,
+    "name": "JagoBD",
+    "url": "http://www.jagobd.com",
+    "testUrl": "http://www.jagobd.com",
+    "category": "TV / Live",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 394,
+    "name": "Yamgo | B4U",
+    "url": "http://yamgo.com/#b4u",
+    "testUrl": "http://yamgo.com/#b4u",
+    "category": "TV / Live",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 395,
+    "name": "ITVHD",
+    "url": "http://www.itvhd.live",
+    "testUrl": "http://www.itvhd.live",
+    "category": "TV / Live",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 396,
+    "name": "DFNBD Torrent",
+    "url": "http://torrent.dfnbd.net",
+    "testUrl": "http://torrent.dfnbd.net",
+    "category": "FTP / Not Support",
+    "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 397,
+    "name": "TorrentBD",
+    "url": "http://www.torrentbd.com",
+    "testUrl": "http://www.torrentbd.com",
+    "category": "FTP / Not Support",
+    "lastCheckPass": null,
     "lastCheckFail": null
   }
 ];
