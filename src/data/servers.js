@@ -1,10 +1,14 @@
 export const servers = [
+  // Add passing ISP names to a server's ispResults list, for example:
+  // "ispResults": ["Link3", "AmberIT"]
+  // Optional server rating: "rating": 3 (integer from 1 to 5).
   {
     "id": 1,
     "name": "BanglaFlix",
     "url": "https://banglaflix.com.bd/",
     "testUrl": "https://banglaflix.com.bd/",
     "category": "OTT / Movie",
+    "ispResults": [],
     "lastCheckPass": null,
     "lastCheckFail": null
   },
@@ -1193,8 +1197,10 @@ export const servers = [
     "url": "http://www.elaach.com",
     "testUrl": "http://www.elaach.com",
     "category": "FTP / Not Support",
-    "lastCheckPass": null,
-    "lastCheckFail": null
+    "ispResults": ["Combined Soft Kazipara"],
+    "lastCheckPass": "2026-11-06",
+    "lastCheckFail": null,
+    "rating": 3
   },
   {
     "id": 134,
@@ -3245,7 +3251,8 @@ export const servers = [
     "url": "http://172.22.22.101/",
     "testUrl": "http://172.22.22.101/",
     "category": "IP / FTP",
-    "lastCheckPass": null,
+    "ispResults": ["Combined Soft Kazipara"],
+    "lastCheckPass": "2026-11-06",
     "lastCheckFail": null
   },
   {

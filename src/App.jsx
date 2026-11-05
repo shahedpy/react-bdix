@@ -6,30 +6,44 @@ import "./App.css";
 const STATUS_META = {
   untested: {
     label: "Not tested",
-    description: "Run a test to check reachability.",
     tone: "neutral"
   },
   testing: {
     label: "Testing",
-    description: "Checking this server now.",
     tone: "busy"
   },
   online: {
     label: "Online",
-    description: "The test request completed.",
     tone: "good"
   },
   offline: {
     label: "Offline",
-    description: "The test request failed or timed out.",
     tone: "bad"
   },
   blocked: {
     label: "Blocked",
-    description: "Open the app over HTTP to test this server.",
     tone: "warn"
   }
 };
+
+function TestingLabel() {
+  return (
+    <>
+      Testing
+      <span className="testing-dots" aria-hidden="true">
+        <span>.</span>
+        <span>.</span>
+        <span>.</span>
+      </span>
+    </>
+  );
+}
+
+function getServerRating(server) {
+  return Number.isInteger(server.rating) && server.rating >= 1 && server.rating <= 5
+    ? server.rating
+    : null;
+}
 
 function formatCheckDate(timestamp) {
   if (!timestamp) {
@@ -57,7 +71,6 @@ function getHttpModeAttemptedKey() {
 
 function App() {
   const [results, setResults] = useState({});
-  const [lastChecked, setLastChecked] = useState({});
   const [httpModeUrl] = useState(() => (
     window.location.protocol === "https:" ? getHttpModeUrl() : ""
   ));
@@ -69,6 +82,8 @@ function App() {
   const searchInputRef = useRef(null);
   const [category, setCategory] = useState("All");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [ratingFilter, setRatingFilter] = useState("all");
+  const [ispFilter, setIspFilter] = useState("all");
   const [announcement, setAnnouncement] = useState("");
   const [theme, setTheme] = useState(() => {
     const savedTheme = window.localStorage.getItem("bdix-theme");
@@ -103,6 +118,15 @@ function App() {
     []
   );
 
+  const isps = useMemo(
+    () => Array.from(new Set(servers.flatMap(server => (
+      Array.isArray(server.ispResults)
+        ? server.ispResults.filter(ispName => typeof ispName === "string" && ispName.trim())
+        : []
+    )))).sort((left, right) => left.localeCompare(right)),
+    []
+  );
+
   const filteredServers = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
@@ -111,11 +135,25 @@ function App() {
         const matchesCategory = category === "All" || server.category === category;
         const status = results[server.id] || "untested";
         const matchesStatus = statusFilter === "all" || status === statusFilter;
+        const rating = getServerRating(server);
+        const matchesRating = ratingFilter === "all" || (
+          ratingFilter === "unrated"
+            ? rating === null
+            : rating === Number(ratingFilter)
+        );
+        const matchesIsp = ispFilter === "all" || (
+          Array.isArray(server.ispResults) && server.ispResults.includes(ispFilter)
+        );
         const searchableText = `${server.name} ${server.category} ${server.url}`.toLowerCase();
-        return matchesCategory && matchesStatus && searchableText.includes(normalizedQuery);
+        return matchesCategory && matchesStatus && matchesRating && matchesIsp && searchableText.includes(normalizedQuery);
       })
-      .sort((left, right) => left.name.localeCompare(right.name));
-  }, [category, query, results, statusFilter]);
+      .sort((left, right) => {
+        const leftRating = getServerRating(left) || 0;
+        const rightRating = getServerRating(right) || 0;
+
+        return rightRating - leftRating || left.name.localeCompare(right.name);
+      });
+  }, [category, ispFilter, query, ratingFilter, results, statusFilter]);
 
   const counts = servers.reduce(
     (summary, server) => {
@@ -144,20 +182,10 @@ function App() {
     }));
 
     const status = await testServer(server.testUrl);
-    const checkedAt = new Date();
 
     setResults(prev => ({
       ...prev,
       [server.id]: status
-    }));
-
-    setLastChecked(prev => ({
-      ...prev,
-      [server.id]: new Intl.DateTimeFormat(undefined, {
-        hour: "numeric",
-        minute: "2-digit",
-        second: "2-digit"
-      }).format(checkedAt)
     }));
 
     if (announceResult) {
@@ -199,6 +227,8 @@ function App() {
     setQuery("");
     setCategory("All");
     setStatusFilter("all");
+    setRatingFilter("all");
+    setIspFilter("all");
     window.requestAnimationFrame(() => searchInputRef.current?.focus());
   }
 
@@ -240,7 +270,7 @@ function App() {
             onClick={testAll}
             disabled={isTesting || filteredServers.length === 0}
           >
-            {isTesting ? "Testing..." : `Test ${filteredServers.length} shown`}
+            {isTesting ? <TestingLabel /> : `Test ${filteredServers.length} shown`}
           </button>
           <div
             className="tooltip-wrap"
@@ -361,21 +391,43 @@ function App() {
             />
           </label>
 
-          <div className="filter-scroller">
-            <div className="filter-group" role="group" aria-label="Filter by category" aria-controls="server-list">
-              {categories.map(item => (
-                <button
-                  className={category === item ? "filter active" : "filter"}
-                  key={item}
-                  onClick={() => setCategory(item)}
-                  type="button"
-                  aria-pressed={category === item}
-                >
-                  {item}
-                </button>
+          <label className="search-field category-filter">
+            <span>Filter by category</span>
+            <select
+              value={category}
+              onChange={event => setCategory(event.target.value)}
+              aria-controls="server-list"
+            >
+              {categories.map(item => <option key={item} value={item}>{item}</option>)}
+            </select>
+          </label>
+
+          <label className="search-field rating-filter">
+            <span>Filter by rating</span>
+            <select
+              value={ratingFilter}
+              onChange={event => setRatingFilter(event.target.value)}
+              aria-controls="server-list"
+            >
+              <option value="all">All ratings</option>
+              <option value="unrated">Unrated</option>
+              {[5, 4, 3, 2, 1].map(rating => (
+                <option key={rating} value={rating}>{rating} stars</option>
               ))}
-            </div>
-          </div>
+            </select>
+          </label>
+
+          <label className="search-field isp-filter">
+            <span>Filter by ISP</span>
+            <select
+              value={ispFilter}
+              onChange={event => setIspFilter(event.target.value)}
+              aria-controls="server-list"
+            >
+              <option value="all">All ISPs</option>
+              {isps.map(ispName => <option key={ispName} value={ispName}>{ispName}</option>)}
+            </select>
+          </label>
         </section>
 
         <section className="server-list" id="server-list" aria-labelledby="server-list-title">
@@ -409,9 +461,11 @@ function App() {
                   <tr>
                     <th scope="col">Server</th>
                     <th scope="col">Category</th>
+                    <th scope="col">Rating</th>
                     <th scope="col">Address</th>
                     <th scope="col">Status</th>
                     <th scope="col">Check history</th>
+                    <th scope="col">ISP results</th>
                     <th scope="col">Actions</th>
                   </tr>
                 </thead>
@@ -419,11 +473,27 @@ function App() {
                   {filteredServers.map(server => {
                     const status = results[server.id] || "untested";
                     const meta = STATUS_META[status];
+                    const serverIspResults = Array.isArray(server.ispResults)
+                      ? server.ispResults
+                        .filter(ispName => typeof ispName === "string" && ispName.trim())
+                        .sort((left, right) => left.localeCompare(right))
+                      : [];
+                    const rating = getServerRating(server);
 
                     return (
                       <tr key={server.id}>
                         <th scope="row" className="server-name-cell">{server.name}</th>
                         <td><span className="category-tag">{server.category}</span></td>
+                        <td className="rating-cell">
+                          {rating ? (
+                            <span className="server-rating" role="img" aria-label={`Rating: ${rating} out of 5 stars`}>
+                              <span className="server-rating-stars" aria-hidden="true">
+                                {"★".repeat(rating)}{"☆".repeat(5 - rating)}
+                              </span>
+                              <span aria-hidden="true">{rating}/5</span>
+                            </span>
+                          ) : "—"}
+                        </td>
                         <td className="address-cell">
                           <a href={server.url} target="_blank" rel="noreferrer" aria-label={`Open ${server.name} address in a new tab`}>
                             {server.url}
@@ -431,12 +501,11 @@ function App() {
                         </td>
                         <td>
                           <div className={`status ${meta.tone}`}>
-                            <span>{meta.label}</span>
-                            <small>
-                              {lastChecked[server.id]
-                                ? `Checked ${lastChecked[server.id]}`
-                                : meta.description}
-                            </small>
+                            <span className="status-label">
+                              <span className="status-copy">
+                                {status === "testing" ? <TestingLabel /> : meta.label}
+                              </span>
+                            </span>
                           </div>
                         </td>
                         <td className="check-history-cell">
@@ -455,6 +524,21 @@ function App() {
                             </small>
                           </div>
                         </td>
+                        <td className="isp-results-cell">
+                          {serverIspResults.length > 0 ? (
+                            <ul>
+                              {serverIspResults.map(ispName => (
+                                <li key={ispName}>
+                                  <span className="isp-result">
+                                    <strong>{ispName}</strong>
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <small className="isp-empty">No ISP results yet</small>
+                          )}
+                        </td>
                         <td className="action-cell">
                           <button
                             onClick={() => handleTest(server)}
@@ -462,7 +546,7 @@ function App() {
                             type="button"
                             aria-label={`${status === "testing" ? "Testing" : "Test"} ${server.name}`}
                           >
-                            {status === "testing" ? "Testing..." : "Test now"}
+                            {status === "testing" ? <TestingLabel /> : "Test now"}
                           </button>
                         </td>
                       </tr>
