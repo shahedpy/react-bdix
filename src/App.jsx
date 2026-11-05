@@ -26,6 +26,16 @@ const STATUS_META = {
   }
 };
 
+const SORTABLE_COLUMNS = [
+  { key: "name", label: "Server" },
+  { key: "category", label: "Category" },
+  { key: "rating", label: "Rating" },
+  { key: "address", label: "Address" },
+  { key: "status", label: "Status" },
+  { key: "checkHistory", label: "Check history" },
+  { key: "ispResults", label: "ISP results" }
+];
+
 function TestingLabel() {
   return (
     <>
@@ -43,6 +53,81 @@ function getServerRating(server) {
   return Number.isInteger(server.rating) && server.rating >= 1 && server.rating <= 5
     ? server.rating
     : null;
+}
+
+function getServerIspResults(server) {
+  return Array.isArray(server.ispResults)
+    ? server.ispResults
+      .filter(ispName => typeof ispName === "string" && ispName.trim())
+      .sort((left, right) => left.localeCompare(right))
+    : [];
+}
+
+function compareText(left, right) {
+  return left.localeCompare(right, undefined, { numeric: true, sensitivity: "base" });
+}
+
+function getLatestCheck(server) {
+  const timestamps = [server.lastCheckPass, server.lastCheckFail]
+    .map(timestamp => timestamp ? Date.parse(timestamp) : Number.NaN)
+    .filter(Number.isFinite);
+
+  return timestamps.length > 0 ? Math.max(...timestamps) : null;
+}
+
+function compareServers(left, right, sortKey, results, direction) {
+  const leftStatus = results[left.id] || "untested";
+  const rightStatus = results[right.id] || "untested";
+  let leftValue;
+  let rightValue;
+
+  switch (sortKey) {
+    case "category":
+      leftValue = left.category;
+      rightValue = right.category;
+      break;
+    case "rating":
+      leftValue = getServerRating(left);
+      rightValue = getServerRating(right);
+      break;
+    case "address":
+      leftValue = left.url;
+      rightValue = right.url;
+      break;
+    case "status":
+      leftValue = STATUS_META[leftStatus].label;
+      rightValue = STATUS_META[rightStatus].label;
+      break;
+    case "checkHistory":
+      leftValue = getLatestCheck(left);
+      rightValue = getLatestCheck(right);
+      break;
+    case "ispResults":
+      leftValue = getServerIspResults(left).join(", ");
+      rightValue = getServerIspResults(right).join(", ");
+      break;
+    case "name":
+    default:
+      leftValue = left.name;
+      rightValue = right.name;
+  }
+
+  const leftMissing = leftValue === null || leftValue === "";
+  const rightMissing = rightValue === null || rightValue === "";
+
+  if (leftMissing) {
+    return rightMissing ? 0 : 1;
+  }
+
+  if (rightMissing) {
+    return -1;
+  }
+
+  if (typeof leftValue === "number" && typeof rightValue === "number") {
+    return (leftValue - rightValue) * (direction === "asc" ? 1 : -1);
+  }
+
+  return compareText(String(leftValue), String(rightValue)) * (direction === "asc" ? 1 : -1);
 }
 
 function formatCheckDate(timestamp) {
@@ -84,6 +169,7 @@ function App() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [ratingFilter, setRatingFilter] = useState("all");
   const [ispFilter, setIspFilter] = useState("all");
+  const [sort, setSort] = useState({ key: "rating", direction: "desc" });
   const [announcement, setAnnouncement] = useState("");
   const [theme, setTheme] = useState(() => {
     const savedTheme = window.localStorage.getItem("bdix-theme");
@@ -148,12 +234,11 @@ function App() {
         return matchesCategory && matchesStatus && matchesRating && matchesIsp && searchableText.includes(normalizedQuery);
       })
       .sort((left, right) => {
-        const leftRating = getServerRating(left) || 0;
-        const rightRating = getServerRating(right) || 0;
-
-        return rightRating - leftRating || left.name.localeCompare(right.name);
+        return compareServers(left, right, sort.key, results, sort.direction) ||
+          compareText(left.name, right.name) ||
+          left.id - right.id;
       });
-  }, [category, ispFilter, query, ratingFilter, results, statusFilter]);
+  }, [category, ispFilter, query, ratingFilter, results, sort, statusFilter]);
 
   const counts = servers.reduce(
     (summary, server) => {
@@ -230,6 +315,15 @@ function App() {
     setRatingFilter("all");
     setIspFilter("all");
     window.requestAnimationFrame(() => searchInputRef.current?.focus());
+  }
+
+  function handleSort(key) {
+    setSort(current => ({
+      key,
+      direction: current.key === key
+        ? current.direction === "asc" ? "desc" : "asc"
+        : key === "rating" ? "desc" : "asc"
+    }));
   }
 
   return (
@@ -455,17 +549,37 @@ function App() {
               </p>
               <table className="server-table">
                 <caption className="sr-only">
-                  {filteredServers.length} servers. Use the Test button to check a server, or open its address.
+                  {filteredServers.length} servers. Select a sortable column heading to change the order.
+                  Use the Test button to check a server, or open its address.
                 </caption>
                 <thead>
                   <tr>
-                    <th scope="col">Server</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Rating</th>
-                    <th scope="col">Address</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Check history</th>
-                    <th scope="col">ISP results</th>
+                    {SORTABLE_COLUMNS.map(column => {
+                      const isSorted = sort.key === column.key;
+                      const directionLabel = sort.direction === "asc" ? "ascending" : "descending";
+
+                      return (
+                        <th
+                          key={column.key}
+                          scope="col"
+                          aria-sort={isSorted ? directionLabel : undefined}
+                        >
+                          <button
+                            className="server-sort-button"
+                            onClick={() => handleSort(column.key)}
+                            type="button"
+                            aria-label={isSorted
+                              ? `${column.label}, sorted ${directionLabel}. Change sort direction.`
+                              : `Sort by ${column.label}`}
+                          >
+                            {column.label}
+                            <span className="sort-indicator" aria-hidden="true">
+                              {isSorted ? sort.direction === "asc" ? "↑" : "↓" : "↕"}
+                            </span>
+                          </button>
+                        </th>
+                      );
+                    })}
                     <th scope="col">Actions</th>
                   </tr>
                 </thead>
@@ -473,11 +587,7 @@ function App() {
                   {filteredServers.map(server => {
                     const status = results[server.id] || "untested";
                     const meta = STATUS_META[status];
-                    const serverIspResults = Array.isArray(server.ispResults)
-                      ? server.ispResults
-                        .filter(ispName => typeof ispName === "string" && ispName.trim())
-                        .sort((left, right) => left.localeCompare(right))
-                      : [];
+                    const serverIspResults = getServerIspResults(server);
                     const rating = getServerRating(server);
 
                     return (
