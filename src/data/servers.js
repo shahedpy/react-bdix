@@ -708,8 +708,8 @@ export const servers = [
   {
     "id": 79,
     "name": "ZeroDollarMovies",
-    "url": "http://zerodollarmovies.com",
-    "testUrl": "http://zerodollarmovies.com",
+    "url": "https://zerodollarmovies.com/",
+    "testUrl": "https://zerodollarmovies.com/",
     "category": "FTP / Movie",
     "lastCheckPass": null,
     "lastCheckFail": null
@@ -2580,47 +2580,11 @@ export const servers = [
     "lastCheckFail": null
   },
   {
-    "id": 289,
-    "name": "KothaNetBD",
-    "url": "http://bdsnwftp.blogspot.com",
-    "testUrl": "http://bdsnwftp.blogspot.com",
-    "category": "Blog",
-    "lastCheckPass": null,
-    "lastCheckFail": null
-  },
-  {
     "id": 291,
     "name": "alluniquearticle",
     "url": "https://www.alluniquearticle.com/2018/09/bdix-ftp-server-list-full-collection.html",
     "testUrl": "https://www.alluniquearticle.com/2018/09/bdix-ftp-server-list-full-collection.html",
     "category": "Blog",
-    "lastCheckPass": null,
-    "lastCheckFail": null
-  },
-  {
-    "id": 295,
-    "name": "AntBD",
-    "url": "http://www.antbd.com",
-    "testUrl": "http://www.antbd.com",
-    "category": "ISP",
-    "lastCheckPass": null,
-    "lastCheckFail": null
-  },
-  {
-    "id": 296,
-    "name": "Bijoy",
-    "url": "http://bijoy.net",
-    "testUrl": "http://bijoy.net",
-    "category": "ISP",
-    "lastCheckPass": null,
-    "lastCheckFail": null
-  },
-  {
-    "id": 297,
-    "name": "DreamnetBD",
-    "url": "http://www.dreamnetbd.com/",
-    "testUrl": "http://www.dreamnetbd.com/",
-    "category": "ISP",
     "lastCheckPass": null,
     "lastCheckFail": null
   },
@@ -2656,15 +2620,6 @@ export const servers = [
     "name": "Classic Network",
     "url": "http://classicnetbd.com/",
     "testUrl": "http://classicnetbd.com/",
-    "category": "ISP",
-    "lastCheckPass": null,
-    "lastCheckFail": null
-  },
-  {
-    "id": 302,
-    "name": "BrothersIT",
-    "url": "http://brothersitbd.com/",
-    "testUrl": "http://brothersitbd.com/",
     "category": "ISP",
     "lastCheckPass": null,
     "lastCheckFail": null
@@ -3228,15 +3183,6 @@ export const servers = [
     "lastCheckFail": null
   },
   {
-    "id": 373,
-    "name": "bioscopeblog.net",
-    "url": "http://bioscopeblog.net/",
-    "testUrl": "http://bioscopeblog.net/",
-    "category": "FTP / Movie",
-    "lastCheckPass": null,
-    "lastCheckFail": null
-  },
-  {
     "id": 374,
     "name": "172.22.22.101",
     "url": "http://172.22.22.101/",
@@ -3253,6 +3199,16 @@ export const servers = [
     "testUrl": "https://gazitv.com/",
     "category": "TV / Live",
     "lastCheckPass": null,
+    "lastCheckFail": null
+  },
+  {
+    "id": 376,
+    "name": "Zflix BD",
+    "url": "http://zflixbd.com/",
+    "testUrl": "http://zflixbd.com/",
+    "category": "FTP / Movie",
+    "ispResults": ["Combined Soft Kazipara"],
+    "lastCheckPass": "2026-11-06",
     "lastCheckFail": null
   }
 ];
