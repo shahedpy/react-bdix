@@ -471,59 +471,6 @@ function App() {
           </div>
         </section>
 
-        <section className="toolbar" aria-label="Server filters">
-          <label className="search-field">
-            <span>Search servers</span>
-            <input
-              id="server-search"
-              ref={searchInputRef}
-              type="search"
-              value={query}
-              onChange={event => setQuery(event.target.value)}
-              placeholder="Name, category, or URL"
-              aria-controls="server-list"
-            />
-          </label>
-
-          <label className="search-field category-filter">
-            <span>Filter by category</span>
-            <select
-              value={category}
-              onChange={event => setCategory(event.target.value)}
-              aria-controls="server-list"
-            >
-              {categories.map(item => <option key={item} value={item}>{item}</option>)}
-            </select>
-          </label>
-
-          <label className="search-field rating-filter">
-            <span>Filter by rating</span>
-            <select
-              value={ratingFilter}
-              onChange={event => setRatingFilter(event.target.value)}
-              aria-controls="server-list"
-            >
-              <option value="all">All ratings</option>
-              <option value="unrated">Unrated</option>
-              {[5, 4, 3, 2, 1].map(rating => (
-                <option key={rating} value={rating}>{rating} stars</option>
-              ))}
-            </select>
-          </label>
-
-          <label className="search-field isp-filter">
-            <span>Filter by ISP</span>
-            <select
-              value={ispFilter}
-              onChange={event => setIspFilter(event.target.value)}
-              aria-controls="server-list"
-            >
-              <option value="all">All ISPs</option>
-              {isps.map(ispName => <option key={ispName} value={ispName}>{ispName}</option>)}
-            </select>
-          </label>
-        </section>
-
         <section className="server-list" id="server-list" aria-labelledby="server-list-title">
           <div className="results-heading">
             <h2 id="server-list-title">Servers</h2>
@@ -549,8 +496,9 @@ function App() {
               </p>
               <table className="server-table">
                 <caption className="sr-only">
-                  {filteredServers.length} servers. Select a sortable column heading to change the order.
-                  Use the Test button to check a server, or open its address.
+                  {filteredServers.length} servers. Use the controls in the column headings to filter,
+                  and select a sortable column heading to change the order. Use the Test button to
+                  check a server, or open its address.
                 </caption>
                 <thead>
                   <tr>
@@ -577,6 +525,57 @@ function App() {
                               {isSorted ? sort.direction === "asc" ? "↑" : "↓" : "↕"}
                             </span>
                           </button>
+                          {column.key === "name" && (
+                            <input
+                              className="column-filter"
+                              id="server-search"
+                              ref={searchInputRef}
+                              type="search"
+                              value={query}
+                              onChange={event => setQuery(event.target.value)}
+                              placeholder="Search servers"
+                              aria-label="Search servers by name, category, or URL"
+                              aria-controls="server-list"
+                            />
+                          )}
+                          {column.key === "category" && (
+                            <select
+                              className="column-filter"
+                              value={category}
+                              onChange={event => setCategory(event.target.value)}
+                              aria-label="Filter by category"
+                              aria-controls="server-list"
+                            >
+                              {categories.map(item => <option key={item} value={item}>{item}</option>)}
+                            </select>
+                          )}
+                          {column.key === "rating" && (
+                            <select
+                              className="column-filter"
+                              value={ratingFilter}
+                              onChange={event => setRatingFilter(event.target.value)}
+                              aria-label="Filter by rating"
+                              aria-controls="server-list"
+                            >
+                              <option value="all">All ratings</option>
+                              <option value="unrated">Unrated</option>
+                              {[5, 4, 3, 2, 1].map(rating => (
+                                <option key={rating} value={rating}>{rating} stars</option>
+                              ))}
+                            </select>
+                          )}
+                          {column.key === "ispResults" && (
+                            <select
+                              className="column-filter"
+                              value={ispFilter}
+                              onChange={event => setIspFilter(event.target.value)}
+                              aria-label="Filter by ISP"
+                              aria-controls="server-list"
+                            >
+                              <option value="all">All ISPs</option>
+                              {isps.map(ispName => <option key={ispName} value={ispName}>{ispName}</option>)}
+                            </select>
+                          )}
                         </th>
                       );
                     })}
