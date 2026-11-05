@@ -373,8 +373,8 @@ export const servers = [
   {
     "id": 54,
     "name": "NaturalBD",
-    "url": "http://naturalbd.com/",
-    "testUrl": "http://naturalbd.com/",
+    "url": "http://www.naturalbd.com/",
+    "testUrl": "http://www.naturalbd.com/",
     "category": "FTP / Movie"
   },
   {
@@ -2518,5 +2518,19 @@ export const servers = [
     "url": "http://bioscopeblog.net/",
     "testUrl": "http://bioscopeblog.net/",
     "category": "FTP / Movie"
+  },
+  {
+    "id": 374,
+    "name": "172.22.22.101",
+    "url": "http://172.22.22.101/",
+    "testUrl": "http://172.22.22.101/",
+    "category": "IP / FTP"
+  },
+  {
+    "id": 375,
+    "name": "Gazi TV",
+    "url": "https://gazitv.com/",
+    "testUrl": "https://gazitv.com/",
+    "category": "TV / Live"
   }
 ];
