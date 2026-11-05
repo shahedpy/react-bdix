@@ -31,6 +31,20 @@ const STATUS_META = {
   }
 };
 
+function formatCheckDate(timestamp) {
+  if (!timestamp) {
+    return "—";
+  }
+
+  const date = new Date(timestamp);
+  return Number.isNaN(date.getTime())
+    ? "—"
+    : new Intl.DateTimeFormat(undefined, {
+      dateStyle: "medium",
+      timeStyle: "short"
+    }).format(date);
+}
+
 function getHttpModeUrl() {
   const httpUrl = new URL(window.location.href);
   httpUrl.protocol = "http:";
@@ -130,6 +144,7 @@ function App() {
     }));
 
     const status = await testServer(server.testUrl);
+    const checkedAt = new Date();
 
     setResults(prev => ({
       ...prev,
@@ -142,7 +157,7 @@ function App() {
         hour: "numeric",
         minute: "2-digit",
         second: "2-digit"
-      }).format(new Date())
+      }).format(checkedAt)
     }));
 
     if (announceResult) {
@@ -396,6 +411,7 @@ function App() {
                     <th scope="col">Category</th>
                     <th scope="col">Address</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Check history</th>
                     <th scope="col">Actions</th>
                   </tr>
                 </thead>
@@ -420,6 +436,22 @@ function App() {
                               {lastChecked[server.id]
                                 ? `Checked ${lastChecked[server.id]}`
                                 : meta.description}
+                            </small>
+                          </div>
+                        </td>
+                        <td className="check-history-cell">
+                          <div>
+                            <small>
+                              <strong>Pass</strong>
+                              <time dateTime={server.lastCheckPass || undefined}>
+                                {formatCheckDate(server.lastCheckPass)}
+                              </time>
+                            </small>
+                            <small>
+                              <strong>Fail</strong>
+                              <time dateTime={server.lastCheckFail || undefined}>
+                                {formatCheckDate(server.lastCheckFail)}
+                              </time>
                             </small>
                           </div>
                         </td>

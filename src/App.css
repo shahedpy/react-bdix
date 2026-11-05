@@ -603,6 +603,29 @@ button:disabled {
   line-height: 1.35;
 }
 
+.check-history-cell {
+  min-width: 210px;
+}
+
+.check-history-cell div {
+  display: grid;
+  gap: 5px;
+}
+
+.check-history-cell small {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 8px;
+  color: var(--one-text-muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.check-history-cell strong {
+  color: var(--one-text-soft);
+}
+
 .status.good {
   background: var(--one-good-soft);
 }
